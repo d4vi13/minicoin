@@ -5,7 +5,7 @@ import (
 )
 
 type Client struct {
-	Identifier int
+	Identifier uint
 	Connection *TCPConn
 }
 

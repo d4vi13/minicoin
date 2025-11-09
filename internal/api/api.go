@@ -41,7 +41,7 @@ type Package struct {
 // Defines interface for client request
 type ClientRequest struct {
 	Type ClientRequestType
-	Identifier int64
+	Identifier uint
 	TransactionValue int64
 }
 
@@ -53,7 +53,7 @@ type ServerResponse struct {
 }
 
 func SendPackage(pkgType PackageType, payload []byte) error {
-	
+
 }
 
 func RecvPackage(pkg *Package) error {
