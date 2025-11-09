@@ -52,3 +52,10 @@ type ServerResponse struct {
 	ClientBalance int64
 }
 
+func SendPackage(pkgType PackageType, payload []byte) error {
+	
+}
+
+func RecvPackage(pkg *Package) error {
+
+}
