@@ -1,5 +1,10 @@
 package api
 
+import (
+	"net"
+	"unsafe"
+)
+
 type PackageType int
 
 const (
@@ -52,10 +57,10 @@ type ServerResponse struct {
 	ClientBalance int64
 }
 
-func SendPackage(pkgType PackageType, payload []byte) error {
+func SendPackage(pkgType PackageType, payload any, conn net.netConn) error {
 
 }
 
-func RecvPackage(pkg *Package) error {
+func RecvPackage(pkg *Package, conn net.netConn) error {
 
 }
