@@ -43,21 +43,21 @@ const (
 
 // Defines interface for communication
 type PackageHeader struct {
-	PkgType PackageType
+	PkgType PackageType `json:"pkgType"`
 }
 
 // Defines interface for client request
 type ClientRequest struct {
-	Type             ClientRequestType
-	Identifier       uint
-	TransactionValue int64
+	Type             ClientRequestType `json:"type"`
+	Identifier       uint              `json:"identifier"`
+	TransactionValue int64             `json:"transactionValue"`
 }
 
 // Defines interface for server response
 type ServerResponse struct {
-	Type          ServerResponseType
-	FailType      ServerFailType
-	ClientBalance int64
+	Type          ServerResponseType `json:"type"`
+	FailType      ServerFailType     `json:"failType"`
+	ClientBalance int64              `json:"clientBalance"`
 }
 
 func send(data any, conn net.Conn) error {
@@ -94,6 +94,8 @@ func SendPackage(pkgType PackageType, payload any, conn net.Conn) error {
 	if err != nil {
 		return fmt.Errorf("Failed to send payload: %v", err)
 	}
+
+	return nil
 }
 
 func recv(conn net.Conn) ([]byte, error) {

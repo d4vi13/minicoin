@@ -6,7 +6,6 @@ import (
 	"net"
 
 	"github.com/d4vi13/minicoin/internal/api"
-	"net"
 )
 
 func Serve(port int) {
@@ -30,7 +29,7 @@ func Serve(port int) {
 func handleClient(conn net.Conn) {
 	var req api.ClientRequest
 
-	log.Println("Serving %s\n", conn.RemoteAddr().String())
+	log.Printf("Serving %s\n", conn.RemoteAddr().String())
 
 	defer conn.Close()
 	err := api.RecvPackage(&req, conn)
@@ -41,7 +40,7 @@ func handleClient(conn net.Conn) {
 
 	switch req.Type {
 	case api.ClientTransaction:
-		log.Println("Got transaction and value is [%v]", req.TransactionValue)
+		log.Printf("Got transaction, value is [%v], client [%d]", req.TransactionValue, req.Identifier)
 		// case api.ClientCheckBalance:
 		//
 		// case api.ClientCheckBlockchainIntegrity:
