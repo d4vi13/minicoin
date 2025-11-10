@@ -1,11 +1,22 @@
 package main
 
 import (
-	"flags"
-	"github.com/d4vi13/minicoin/internal/api"
+	"flag"
+
 	"github.com/d4vi13/minicoin/internal/server"
 )
 
+func Parse(port *int) {
+	const (
+		PORT_DEFAULT = 8080
+	)
+
+	flag.IntVar(port, "port", PORT_DEFAULT, "Set server port")
+}
+
 func main() {
-	server.Start()
+	var port int
+
+	Parse(&port)
+	server.Serve(port)
 }
