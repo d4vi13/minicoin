@@ -1,11 +1,11 @@
 package main
 
 import (
-  "github.com/d4vi13/minicoin/internal/server"
-  "github.com/d4vi13/minicoin/internal/api"
-  "flags"
+	"flags"
+	"github.com/d4vi13/minicoin/internal/api"
+	"github.com/d4vi13/minicoin/internal/server"
 )
 
 func main() {
-  server.Start()
+	server.Start()
 }

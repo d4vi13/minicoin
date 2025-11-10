@@ -1,16 +1,16 @@
 package server
 
 import (
-	"net"
 	"github.com/d4vi13/minicoin/internal/api"
+	"net"
 )
 
 func Serve(port int) error {
-	
+
 }
 
 func handleClient(connection *net.netConn) {
-	
+
 }
 
 func handleTransaction(clientId uint, value int64) (api.ServerResponse, error) {
