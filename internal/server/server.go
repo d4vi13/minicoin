@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/d4vi13/minicoin/internal/api"
+	"net"
 )
 
 func Serve(port int) {

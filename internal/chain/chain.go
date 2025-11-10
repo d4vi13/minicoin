@@ -1,18 +1,18 @@
 package chain
 
 import (
-	"crypto/sha512"
 	"container/list"
+	"crypto/sha512"
 	"time"
 )
 
-var chain List 
+var chain List
 
 type ChainNode struct {
-	clientId uint
-	transactionTime time.Time
+	clientId         uint
+	transactionTime  time.Time
 	transactionValue int64
-	nodeHash [sha512.Size256]byte
+	nodeHash         [sha512.Size256]byte
 }
 
 func AddChainNode() error {
