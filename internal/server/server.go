@@ -29,6 +29,7 @@ func Serve(port int) {
 
 func handleClient(conn net.Conn) {
 	var req api.ClientRequest
+	var res api.ServerResponse
 
 	log.Println("Serving %s\n", conn.RemoteAddr().String())
 
@@ -41,7 +42,11 @@ func handleClient(conn net.Conn) {
 
 	switch req.Type {
 	case api.ClientTransaction:
-		log.Println("Got transaction and value is [%v]", req.TransactionValue)
+		log.Printf("Got transaction, value is [%v], client [%d]", req.TransactionValue, req.Identifier)
+		res, err = handleTransaction(req.Identifier, req.TransactionValue)
+		if err != nil {
+			log.Printf("Failed to handle client transaction %v", err)
+		}
 		// case api.ClientCheckBalance:
 		//
 		// case api.ClientCheckBlockchainIntegrity:
@@ -49,10 +54,21 @@ func handleClient(conn net.Conn) {
 		log.Println("Request is not client transaction")
 	}
 
+	err = api.SendPackage(api.ServerResponsePkg, res, conn)
+	if err != nil {
+		log.Printf("Failed to send response %v", err)
+	}
 }
 
 func handleTransaction(clientId uint, value int64) (api.ServerResponse, error) {
-	return api.ServerResponse{}, nil
+
+	var res api.ServerResponse
+
+	res.Type = api.ServerSuccessResponse
+	res.FailType = api.ServerNoFail
+	res.ClientBalance = 999
+
+	return res, nil
 }
 
 func handleCheckBlockchain() (api.ServerResponse, error) {

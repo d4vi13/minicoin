@@ -35,9 +35,9 @@ func Parse(addr *string, port *int, clientId *int, action *int, value *string) e
 	if *action == -1 {
 		return fmt.Errorf("No action given!")
 	}
-  if *action >= client.MAX_ACTION {
-    return fmt.Errorf("Invalid action given!")
-  }
+	if *action >= client.MAX_ACTION {
+		return fmt.Errorf("Invalid action given!")
+	}
 	if *action == client.TRANSACTION && *value == VALUE_DEFAULT {
 		return fmt.Errorf("Transaction set and no value given!")
 	}
@@ -56,7 +56,7 @@ func main() {
 	err := Parse(&addr, &port, &id, &action, &valueString)
 	if err != nil {
 		flag.PrintDefaults()
-    fmt.Println()
+		fmt.Println()
 		log.Fatal(err)
 	}
 
