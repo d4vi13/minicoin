@@ -40,24 +40,45 @@ func (client *Client) Init(clientId uint, name string, port int) {
 }
 
 func (client *Client) HandleAction(action int, value int64) {
+	var res api.ServerResponse
+	var err error
+
 	defer client.connection.Close()
 
 	switch action {
 	case TRANSACTION:
-		var req api.ClientRequest
+		res, err = client.transaction(value)
+		if err != nil {
+			log.Printf("Transaction failed %v", err)
+			return
+		}
 
-		req.Type = api.ClientTransaction
-		req.Identifier = client.identifier
-		req.TransactionValue = value
-		api.SendPackage(api.ClientRequestPkg, req, client.connection)
+		log.Printf("Value %d", res.ClientBalance)
+
 	default:
 		log.Println("Action is not transaction")
 	}
-
 }
 
-func (client *Client) transaction(value int64) {
+func (client *Client) transaction(value int64) (api.ServerResponse, error) {
+	var req api.ClientRequest
+	var res api.ServerResponse
 
+	req.Type = api.ClientTransaction
+	req.Identifier = client.identifier
+	req.TransactionValue = value
+
+	err := api.SendPackage(api.ClientRequestPkg, req, client.connection)
+	if err != nil {
+		return api.ServerResponse{}, fmt.Errorf("Failed to send transaction request %v", err)
+	}
+
+	err = api.RecvPackage(&req, client.connection)
+	if err != nil {
+		return api.ServerResponse{}, fmt.Errorf("Failed to send transaction request %v", err)
+	}
+
+	return res, nil
 }
 
 func (client *Client) isBlockchainCorrupted() bool {
