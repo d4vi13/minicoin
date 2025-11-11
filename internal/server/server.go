@@ -46,9 +46,10 @@ func handleClient(conn net.Conn) {
 		if err != nil {
 			log.Printf("Failed to handle client transaction %v", err)
 		}
-		// case api.ClientCheckBalance:
-		//
-		// case api.ClientCheckBlockchainIntegrity:
+	case api.ClientCheckBalance:
+
+	case api.ClientCheckBlockchainIntegrity:
+
 	default:
 		log.Println("Request is not client transaction")
 	}
@@ -71,9 +72,9 @@ func handleTransaction(clientId uint, value int64) (api.ServerResponse, error) {
 }
 
 func handleCheckBlockchain() (api.ServerResponse, error) {
-	return api.ServerResponse{}, nil
+
 }
 
 func handleCheckBalance() (api.ServerResponse, error) {
-	return api.ServerResponse{}, nil
+
 }

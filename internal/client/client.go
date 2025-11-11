@@ -45,22 +45,34 @@ func (client *Client) HandleAction(action int, value int64) {
 
 	defer client.connection.Close()
 
+	res, err = client.request(value)
+	if err != nil {
+		log.Printf("Transaction failed %v", err)
+		return
+	}
+	err = api.CheckServerResponse(res)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
 	switch action {
 	case TRANSACTION:
-		res, err = client.transaction(value)
-		if err != nil {
-			log.Printf("Transaction failed %v", err)
-			return
+		log.Printf("Transaction successful and balance is [%v]", res.ClientBalance)
+	case CHECK_BLOCKCHAIN:
+		if res.IsBlockchainCorrupted == true {
+			log.Println("BLOCKCHAIN CORRUPTED!")
+		} else {
+			log.Println("Blockchain is fine!")
 		}
-
-		log.Printf("Value %d", res.ClientBalance)
-
+	case GET_BALANCE:
+		log.Printf("Client [%d] with balance [%v]", client.identifier, res.ClientBalance)
 	default:
-		log.Println("Action is not transaction")
+		log.Println("Action is invalid")
 	}
 }
 
-func (client *Client) transaction(value int64) (api.ServerResponse, error) {
+func (client *Client) request(value int64) (api.ServerResponse, error) {
 	var req api.ClientRequest
 	var res api.ServerResponse
 
@@ -73,18 +85,10 @@ func (client *Client) transaction(value int64) (api.ServerResponse, error) {
 		return api.ServerResponse{}, fmt.Errorf("Failed to send transaction request %v", err)
 	}
 
-	err = api.RecvPackage(&req, client.connection)
+	err = api.RecvPackage(&res, client.connection)
 	if err != nil {
 		return api.ServerResponse{}, fmt.Errorf("Failed to send transaction request %v", err)
 	}
 
 	return res, nil
-}
-
-func (client *Client) isBlockchainCorrupted() bool {
-	return false
-}
-
-func (client *Client) getMyBalance() int64 {
-	return 0
 }
