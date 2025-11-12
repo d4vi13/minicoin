@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"os"
 
 	"github.com/d4vi13/minicoin/internal/api"
 	"github.com/d4vi13/minicoin/internal/chain"
@@ -60,7 +61,7 @@ func handleClient(conn net.Conn) {
 		log.Println("Blockchain corrupted! Operation denied!")
 	}
 
-	fmt.Println()
+	os.Stderr.WriteString("\n")
 
 	err = api.SendPackage(api.ServerResponsePkg, res, conn)
 	if err != nil {
