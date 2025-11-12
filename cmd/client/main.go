@@ -4,18 +4,17 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"strconv"
 
 	"github.com/d4vi13/minicoin/internal/client"
 )
 
-func Parse(addr *string, port *int, clientId *uint, action *int, value *string) error {
+func Parse(addr *string, port *int, clientId *uint, action *int, value *int64) error {
 	const (
 		ADDR_DEFAULT   = "localhost"
 		PORT_DEFAULT   = 8080
 		ID_DEFAULT     = 0
 		ACTION_DEFAULT = -1
-		VALUE_DEFAULT  = ""
+		VALUE_DEFAULT  = 0
 	)
 
 	actionDesc := fmt.Sprintf("define action: Transaction [%d] Check Blockchain"+
@@ -26,7 +25,7 @@ func Parse(addr *string, port *int, clientId *uint, action *int, value *string) 
 	flag.IntVar(port, "port", PORT_DEFAULT, "define server port")
 	flag.UintVar(clientId, "id", ID_DEFAULT, "define client")
 	flag.IntVar(action, "action", ACTION_DEFAULT, actionDesc)
-	flag.StringVar(value, "value", VALUE_DEFAULT, "define transaction value")
+	flag.Int64Var(value, "value", VALUE_DEFAULT, "define transaction value")
 
 	flag.Parse()
 
@@ -53,16 +52,10 @@ func main() {
 	var value int64
 	var port int
 
-	var valueString string
-	err := Parse(&addr, &port, &id, &action, &valueString)
+	err := Parse(&addr, &port, &id, &action, &value)
 	if err != nil {
 		flag.PrintDefaults()
 		fmt.Println()
-		log.Fatal(err)
-	}
-
-	value, err = strconv.ParseInt(valueString, 10, 64)
-	if err != nil {
 		log.Fatal(err)
 	}
 

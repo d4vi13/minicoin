@@ -45,38 +45,56 @@ func (client *Client) HandleAction(action int, value int64) {
 
 	defer client.connection.Close()
 
-	res, err = client.request(value)
-	if err != nil {
-		log.Printf("Transaction failed %v", err)
-		return
-	}
-	err = api.CheckServerResponse(res)
-	if err != nil {
-		log.Println(err)
-		return
-	}
+	
 
 	switch action {
 	case TRANSACTION:
+		res, err = client.request(api.ClientTransaction, value)
+		if err != nil {
+			log.Printf("Transaction failed %v", err)
+			return
+		}
+		err = CheckServerResponse(res)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
 		log.Printf("Transaction successful and balance is [%v]", res.ClientBalance)
 	case CHECK_BLOCKCHAIN:
+		res, err = client.request(api.ClientCheckBlockchainIntegrity, value)
+		if err != nil {
+			log.Printf("Transaction failed %v", err)
+			return
+		}
 		if res.IsBlockchainCorrupted == true {
-			log.Println("BLOCKCHAIN CORRUPTED!")
+			log.Println("Blockchain corrupted!")
 		} else {
 			log.Println("Blockchain is fine!")
 		}
 	case GET_BALANCE:
+		res, err = client.request(api.ClientCheckBalance, value)
+		if err != nil {
+			log.Printf("Transaction failed %v", err)
+			return
+		}
+		err = CheckServerResponse(res)
+		if err != nil {
+			log.Println(err)
+			return
+		}
+
 		log.Printf("Client [%d] with balance [%v]", client.identifier, res.ClientBalance)
 	default:
 		log.Println("Action is invalid")
 	}
 }
 
-func (client *Client) request(value int64) (api.ServerResponse, error) {
+func (client *Client) request(typeReq api.ClientRequestType, value int64) (api.ServerResponse, error) {
 	var req api.ClientRequest
 	var res api.ServerResponse
 
-	req.Type = api.ClientTransaction
+	req.Type = typeReq
 	req.Identifier = client.identifier
 	req.TransactionValue = value
 
@@ -91,4 +109,25 @@ func (client *Client) request(value int64) (api.ServerResponse, error) {
 	}
 
 	return res, nil
+}
+
+func CheckServerResponse(serverResp api.ServerResponse) error {
+	if serverResp.Type == api.ServerSuccessResponse {
+		return nil
+	}
+
+	if serverResp.IsBlockchainCorrupted {
+		return fmt.Errorf("Blockchain corrupted!")
+	}
+
+	switch serverResp.FailType {
+	case api.ServerNoFail:
+		return fmt.Errorf("Server failed but no fail type was specified!")
+	case api.ServerClientUnkown:
+		return fmt.Errorf("Server did not recognize client!")
+	case api.ServerClientOverdraw:
+		return fmt.Errorf("Server returned not enough balance!")
+	default:
+		return fmt.Errorf("Unknown error in CheckServerResponse!")
+	}
 }

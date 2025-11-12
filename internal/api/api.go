@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-
-	"github.com/d4vi13/minicoin/internal/api"
 )
 
 const (
@@ -32,6 +30,7 @@ const (
 	ServerNoFail ServerFailType = iota
 	ServerClientUnkown
 	ServerClientOverdraw
+	BlockchainTainted
 )
 
 type ClientRequestType int
@@ -60,23 +59,6 @@ type ServerResponse struct {
 	FailType              ServerFailType     `json:"failType"`
 	ClientBalance         int64              `json:"clientBalance"`
 	IsBlockchainCorrupted bool               `json:"isBlockchainCorrupted"`
-}
-
-func CheckServerResponse(serverResp ServerResponse) error {
-	if serverResp.Type == ServerSuccessResponse {
-		return nil
-	}
-
-	switch serverResp.FailType {
-	case api.ServerNoFail:
-		return fmt.Errorf("Server failed but no fail type was specified")
-	case api.ServerClientUnkown:
-		return fmt.Errorf("Server did not recognize client")
-	case api.ServerClientOverdraw:
-		return fmt.Errorf("Server returned not enough balance")
-	default:
-		return fmt.Errorf("Unknown error in CheckServerResponse")
-	}
 }
 
 func send(data any, conn net.Conn) error {

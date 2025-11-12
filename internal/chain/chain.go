@@ -6,6 +6,8 @@ import (
 	"encoding/binary"
 	"time"
 	"unsafe"
+	"log"
+	"bytes"
 )
 
 type ChainError int
@@ -19,38 +21,76 @@ const (
 
 var chain list.List
 
-type NodeContent struct {
-	clientId         uint
-	transactionTime  time.Time
-	transactionValue int64
-}
-
 type ChainNode struct {
-	nodeContent NodeContent
+	clientId         uint32
+	transactionTime  int64
+	transactionValue int64
 	nodeHash    [sha512.Size256]byte
 }
 
-func Init() error {
+func Init() {
 	chain.Init()
-
-	landmarkNode := make(ChainNode)
+	landmarkNode := new(ChainNode)
 	chain.PushBack(landmarkNode)
+}
 
-	byteBuffer := make([]byte, unsafe.Sizeof(landmarkNode.nodeContent))
-	_, err := binary.Encode(byteBuffer, binary.LittleEndian, landmarkNode.nodeContent)
+func (node *ChainNode) Hash(prevHash []byte) error {
+	copy(node.nodeHash[:], prevHash)
+
+	byteBuffer := make([]byte, unsafe.Sizeof(*node))
+	_, err := binary.Encode(byteBuffer, binary.LittleEndian, node)
 	if err != nil {
 		return err
 	}
 
+	newHash := sha512.Sum512_256(byteBuffer)
+	copy(node.nodeHash[:], newHash[:])
+
+	return nil
 }
 
-func (node *ChainNode) Hash() {
-	copy(node.nodeHash[:])
+func addChainNode(clientId uint, transactionValue int64) {
+	newNode := new(ChainNode)
+
+	newNode.clientId = uint32(clientId)
+	newNode.transactionTime = time.Now().UnixNano()
+	newNode.transactionValue = transactionValue
+
+	prevHash := chain.Back().Value.(*ChainNode).nodeHash
+	err := newNode.Hash(prevHash[:])
+	if err != nil {
+		log.Println("deu ruim: ", err)
+	}
+
+	log.Printf("Adding node: ")
+	log.Printf("\t Client id: [%v]", (*newNode).clientId)
+	time := time.Unix(0, (*newNode).transactionTime).Format(time.UnixDate)
+	log.Printf("\t Transaction time: [%v]", time)
+	log.Printf("\t Node hash: [%x]", (*newNode).nodeHash)
+
+	chain.PushBack(newNode)
 }
 
-func addChainNode(clientId uint, transactionValue int64) ChainError {
-	newNode := make(ChainNode)
+func isNodeHashIntegral(elem *list.Element) bool {
+	prev := elem.Prev()
+	if prev == nil {
+		return true
+	}
 
+	nodePrev := prev.Value.(*ChainNode)
+	nodeElem := elem.Value.(*ChainNode)
+
+	var backupHash [sha512.Size256]byte
+	copy(backupHash[:], nodeElem.nodeHash[:])
+	err := nodeElem.Hash(nodePrev.nodeHash[:])
+	if err != nil {
+		log.Println("Falha na verificacao do hash: ", err)
+	}
+
+	return bytes.Equal(backupHash[:], nodeElem.nodeHash[:])
+}
+
+func AddTransaction(clientId uint, transactionValue int64) ChainError {
 	if transactionValue < 0 {
 		balance, err := GetClientBalance(clientId)
 		if err != SUCCESS {
@@ -61,21 +101,27 @@ func addChainNode(clientId uint, transactionValue int64) ChainError {
 		}
 	}
 
-	(*newNode).clientId = clientId
-	(*newNode).transactionTime = time.Now()
-	(*newNode).transactionValue = transactionValue
+	addChainNode(clientId, transactionValue)
 
-	chain.PushBack()
-}
-
-func isNodeHashCorrupted() bool {
-
+	return SUCCESS
 }
 
 func IsChainTainted() bool {
+	log.Println("Checking blockchain integrity:")
+	cont := 1
 
+	for elem := chain.Front(); elem != nil; elem = elem.Next() {
+		if isNodeHashIntegral(elem) == false {
+			return true
+		} else {
+			log.Printf("\t Node [%v] hash untainted", cont)
+		}
+		cont += 1
+	}
+
+	return false
 }
 
 func GetClientBalance(clientId uint) (int64, ChainError) {
-
+	return 0, SUCCESS
 }

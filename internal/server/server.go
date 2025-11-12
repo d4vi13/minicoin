@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/d4vi13/minicoin/internal/api"
+	"github.com/d4vi13/minicoin/internal/chain"
 )
 
 func Serve(port int) {
@@ -16,6 +17,8 @@ func Serve(port int) {
 		log.Fatal(err)
 	}
 	defer listener.Close()
+
+	chain.Init()
 
 	for {
 		conn, err := listener.Accept()
@@ -42,14 +45,13 @@ func handleClient(conn net.Conn) {
 	switch req.Type {
 	case api.ClientTransaction:
 		log.Printf("Got transaction, value is [%v], client [%d]", req.TransactionValue, req.Identifier)
-		res, err = handleTransaction(req.Identifier, req.TransactionValue)
-		if err != nil {
-			log.Printf("Failed to handle client transaction %v", err)
-		}
+		res = handleTransaction(req.Identifier, req.TransactionValue)
 	case api.ClientCheckBalance:
-
+		log.Printf("Got check balance request, client [%d]", req.Identifier)
+		res = handleCheckBalance(req.Identifier)
 	case api.ClientCheckBlockchainIntegrity:
-
+		log.Printf("Got check block chain request, client [%d]", req.Identifier)
+		res = handleCheckBlockchain()
 	default:
 		log.Println("Request is not client transaction")
 	}
@@ -60,21 +62,57 @@ func handleClient(conn net.Conn) {
 	}
 }
 
-func handleTransaction(clientId uint, value int64) (api.ServerResponse, error) {
+func handleTransaction(clientId uint, value int64) (api.ServerResponse) {
+	var res api.ServerResponse
 
+	chainErr := chain.AddTransaction(clientId, value)
+	translateChainError(&res, chainErr)
+
+	return res
+}
+
+func handleCheckBlockchain() api.ServerResponse {
 	var res api.ServerResponse
 
 	res.Type = api.ServerSuccessResponse
-	res.FailType = api.ServerNoFail
-	res.ClientBalance = 999
+	res.IsBlockchainCorrupted = chain.IsChainTainted()
+	if res.IsBlockchainCorrupted {
+		log.Println("Blockchain is corrupted!")
+	} else {
+		log.Println("Blockchain is not corrupted!")
+	}
 
-	return res, nil
+	return res
 }
 
-func handleCheckBlockchain() (api.ServerResponse, error) {
+func handleCheckBalance(clientId uint) api.ServerResponse {
+	var res api.ServerResponse
 
+	balance, chainErr := chain.GetClientBalance(clientId)
+	translateChainError(&res, chainErr)
+	res.ClientBalance = balance
+
+	return res
 }
 
-func handleCheckBalance() (api.ServerResponse, error) {
+func translateChainError(res *api.ServerResponse, chainErr chain.ChainError) {
+	if chainErr == chain.SUCCESS {
+		res.Type = api.ServerSuccessResponse
+		res.FailType = api.ServerNoFail
+		return
+	}
 
+	res.Type = api.ServerFailedResponse
+	if (chainErr == chain.CLIENT_OVERDRAW) {
+		res.FailType = api.ServerClientOverdraw
+		return
+	}
+	if (chainErr == chain.CLIENT_NOT_FOUND) {
+		res.FailType = api.ServerClientUnkown
+		return
+	}
+	if (chainErr == chain.BLOCKCHAIN_TAINTED) {
+		res.IsBlockchainCorrupted = true
+		return
+	}
 }
