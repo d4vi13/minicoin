@@ -1,13 +1,13 @@
 package chain
 
 import (
+	"bytes"
 	"container/list"
 	"crypto/sha512"
 	"encoding/binary"
+	"log"
 	"time"
 	"unsafe"
-	"log"
-	"bytes"
 )
 
 type ChainError int
@@ -20,18 +20,20 @@ const (
 )
 
 var chain list.List
+var failIn int
 
 type ChainNode struct {
 	clientId         uint32
 	transactionTime  int64
 	transactionValue int64
-	nodeHash    [sha512.Size256]byte
+	nodeHash         [sha512.Size256]byte
 }
 
-func Init() {
+func Init(nodeAdditionsUntilFailure int) {
 	chain.Init()
 	landmarkNode := new(ChainNode)
 	chain.PushBack(landmarkNode)
+	failIn = nodeAdditionsUntilFailure
 }
 
 func (node *ChainNode) Hash(prevHash []byte) error {
@@ -52,6 +54,10 @@ func (node *ChainNode) Hash(prevHash []byte) error {
 func addChainNode(clientId uint, transactionValue int64) {
 	newNode := new(ChainNode)
 
+	if failIn >= 0 {
+		failIn -= 1
+	}
+
 	newNode.clientId = uint32(clientId)
 	newNode.transactionTime = time.Now().UnixNano()
 	newNode.transactionValue = transactionValue
@@ -67,6 +73,11 @@ func addChainNode(clientId uint, transactionValue int64) {
 	time := time.Unix(0, (*newNode).transactionTime).Format(time.UnixDate)
 	log.Printf("\t Transaction time: [%v]", time)
 	log.Printf("\t Node hash: [%x]", (*newNode).nodeHash)
+
+	if failIn == 0 {
+		newNode.nodeHash[0] += 1
+		log.Println("Altering hash...")
+	}
 
 	chain.PushBack(newNode)
 }
@@ -107,14 +118,12 @@ func AddTransaction(clientId uint, transactionValue int64) ChainError {
 }
 
 func IsChainTainted() bool {
-	log.Println("Checking blockchain integrity:")
 	cont := 1
 
 	for elem := chain.Front(); elem != nil; elem = elem.Next() {
 		if isNodeHashIntegral(elem) == false {
+			log.Printf("\t Node [%v] hash tainted", cont)
 			return true
-		} else {
-			log.Printf("\t Node [%v] hash untainted", cont)
 		}
 		cont += 1
 	}
@@ -123,5 +132,20 @@ func IsChainTainted() bool {
 }
 
 func GetClientBalance(clientId uint) (int64, ChainError) {
-	return 0, SUCCESS
+	balance := int64(0)
+	clientFound := false
+
+	for elem := chain.Front(); elem != nil; elem = elem.Next() {
+		node := elem.Value.(*ChainNode)
+		if node.clientId == uint32(clientId) {
+			balance += node.transactionValue
+			clientFound = true
+		}
+	}
+
+	if clientFound == false {
+		return balance, CLIENT_NOT_FOUND
+	}
+
+	return balance, SUCCESS
 }

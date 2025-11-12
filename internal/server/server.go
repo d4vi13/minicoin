@@ -9,7 +9,7 @@ import (
 	"github.com/d4vi13/minicoin/internal/chain"
 )
 
-func Serve(port int) {
+func Serve(port int, failIn int) {
 	address := fmt.Sprintf(":%d", port)
 
 	listener, err := net.Listen("tcp4", address)
@@ -18,7 +18,7 @@ func Serve(port int) {
 	}
 	defer listener.Close()
 
-	chain.Init()
+	chain.Init(failIn)
 
 	for {
 		conn, err := listener.Accept()
@@ -42,19 +42,25 @@ func handleClient(conn net.Conn) {
 		return
 	}
 
-	switch req.Type {
-	case api.ClientTransaction:
-		log.Printf("Got transaction, value is [%v], client [%d]", req.TransactionValue, req.Identifier)
-		res = handleTransaction(req.Identifier, req.TransactionValue)
-	case api.ClientCheckBalance:
-		log.Printf("Got check balance request, client [%d]", req.Identifier)
-		res = handleCheckBalance(req.Identifier)
-	case api.ClientCheckBlockchainIntegrity:
-		log.Printf("Got check block chain request, client [%d]", req.Identifier)
-		res = handleCheckBlockchain()
-	default:
-		log.Println("Request is not client transaction")
+	isBlockchainTainted := chain.IsChainTainted()
+	if !isBlockchainTainted || req.Type == api.ClientCheckBlockchainIntegrity {
+		switch req.Type {
+		case api.ClientTransaction:
+			res = handleTransaction(req.Identifier, req.TransactionValue)
+		case api.ClientCheckBalance:
+			res = handleCheckBalance(req.Identifier)
+		case api.ClientCheckBlockchainIntegrity:
+			res = handleCheckBlockchain(req.Identifier, isBlockchainTainted)
+		default:
+			log.Println("Request is not client transaction")
+		}
+	} else {
+		res.Type = api.ServerFailedResponse
+		res.IsBlockchainCorrupted = true
+		log.Println("Blockchain corrupted! Operation denied!")
 	}
+
+	fmt.Println()
 
 	err = api.SendPackage(api.ServerResponsePkg, res, conn)
 	if err != nil {
@@ -62,24 +68,35 @@ func handleClient(conn net.Conn) {
 	}
 }
 
-func handleTransaction(clientId uint, value int64) (api.ServerResponse) {
+func handleTransaction(clientId uint, value int64) api.ServerResponse {
 	var res api.ServerResponse
 
+	log.Printf("Got transaction request:")
+	log.Printf("\t Requesting Client: [%d]", clientId)
+	log.Printf("\t Requested Value: [%d]", value)
 	chainErr := chain.AddTransaction(clientId, value)
 	translateChainError(&res, chainErr)
+	switch res.FailType {
+	case api.ServerClientOverdraw:
+		log.Printf("\t Client [%d] does not have enough balance!", clientId)
+	case api.ServerClientUnkown:
+		log.Printf("\t Client [%d] not found!", clientId)
+	}
 
 	return res
 }
 
-func handleCheckBlockchain() api.ServerResponse {
+func handleCheckBlockchain(clientId uint, blockchainTainted bool) api.ServerResponse {
 	var res api.ServerResponse
 
+	log.Printf("Got check blockchain request:")
+	log.Printf("\t Requesting Client: [%d]", clientId)
 	res.Type = api.ServerSuccessResponse
-	res.IsBlockchainCorrupted = chain.IsChainTainted()
+	res.IsBlockchainCorrupted = blockchainTainted
 	if res.IsBlockchainCorrupted {
-		log.Println("Blockchain is corrupted!")
+		log.Println("\t Blockchain is corrupted!")
 	} else {
-		log.Println("Blockchain is not corrupted!")
+		log.Println("\t Blockchain is not corrupted!")
 	}
 
 	return res
@@ -88,9 +105,16 @@ func handleCheckBlockchain() api.ServerResponse {
 func handleCheckBalance(clientId uint) api.ServerResponse {
 	var res api.ServerResponse
 
+	log.Printf("Got check balance request:")
+	log.Printf("\t Requesting Client: [%d]", clientId)
 	balance, chainErr := chain.GetClientBalance(clientId)
 	translateChainError(&res, chainErr)
 	res.ClientBalance = balance
+	if res.Type == api.ServerFailedResponse {
+		log.Printf("\t Client [%d] not found!", clientId)
+	} else {
+		log.Printf("\t Client [%d] with balance [%d]", clientId, balance)
+	}
 
 	return res
 }
@@ -103,15 +127,15 @@ func translateChainError(res *api.ServerResponse, chainErr chain.ChainError) {
 	}
 
 	res.Type = api.ServerFailedResponse
-	if (chainErr == chain.CLIENT_OVERDRAW) {
+	if chainErr == chain.CLIENT_OVERDRAW {
 		res.FailType = api.ServerClientOverdraw
 		return
 	}
-	if (chainErr == chain.CLIENT_NOT_FOUND) {
+	if chainErr == chain.CLIENT_NOT_FOUND {
 		res.FailType = api.ServerClientUnkown
 		return
 	}
-	if (chainErr == chain.BLOCKCHAIN_TAINTED) {
+	if chainErr == chain.BLOCKCHAIN_TAINTED {
 		res.IsBlockchainCorrupted = true
 		return
 	}
