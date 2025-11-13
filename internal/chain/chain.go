@@ -8,7 +8,6 @@ import (
 	"encoding/binary"
 	"log"
 	"time"
-	"unsafe"
 )
 
 // ChainError represents error codes for blockchain operations
@@ -28,10 +27,10 @@ var failIn int
 
 // ChainNode represents a single block in the blockchain
 type ChainNode struct {
-	clientId         uint32    // Client identifier
-	transactionTime  int64     // Transaction timestamp
-	transactionValue int64     // Transaction amount
-	nodeHash         [sha512.Size256]byte  // Block hash
+	clientId         uint32               // Client identifier
+	transactionTime  int64                // Transaction timestamp
+	transactionValue int64                // Transaction amount
+	nodeHash         [sha512.Size256]byte // Block hash
 }
 
 // Init initializes the blockchain with a genesis block
@@ -47,11 +46,12 @@ func (node *ChainNode) Hash(prevHash []byte) error {
 	copy(node.nodeHash[:], prevHash)
 
 	// Serialize node data for hashing
-	byteBuffer := make([]byte, unsafe.Sizeof(*node))
-	_, err := binary.Encode(byteBuffer, binary.LittleEndian, node)
+	buf := new(bytes.Buffer)
+	err := binary.Write(buf, binary.LittleEndian, node)
 	if err != nil {
 		return err
 	}
+	byteBuffer := buf.Bytes()
 
 	// Generate SHA512/256 hash
 	newHash := sha512.Sum512_256(byteBuffer)
