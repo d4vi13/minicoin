@@ -6,7 +6,7 @@ mage all
 
 # run server
 
-./minicoin-server --fail-in 6 2> log.txt &
+./minicoin-server --fail-in 6 2> server-log.txt &
 
 # add initial transactions
 ./client -id 1 --action 0 --value 20 

@@ -1,5 +1,6 @@
 <html>
   <head>
+    <h2> Estrutura do Codigo </h2>
     <pre>
 .
 ├── cmd
@@ -19,8 +20,37 @@
 │   │   └── <a href="internal/client/client.go">client.go</a>
 │   └── server
 │       └── <a href="internal/server/server.go">server.go</a>
-└── <a href="magefile.go">magefile.go</a>
+├── <a href="magefile.go">magefile.go</a>
+└── <a href="test.sh">test.sh</a>
     </pre>
+
+    <h2> Arquivos de Codigo Fonte </h2>
+<ul>
+  <li><a href="cmd/client/main.go">cmd/client/main.go</a>: Processa os argumentos da CLI e executa a lógica do cliente.</li>
+  <li><a href="cmd/server/main.go">cmd/server/main.go</a>: Processa os argumentos da CLI e executa a lógica do servidor.</li>
+  <li><a href="internal/api/api.go">internal/api/api.go</a>: Define pacotes, constantes e primitivas de envio (<i>SendPackage</i>) e recebimento (<i>RecvPackage</i>), estabelecendo o protocolo da aplicação.</li>
+  <li><a href="internal/chain/chain.go">internal/chain/chain.go</a>: Implementa a blockchain e fornece interfaces para adição, verificação e auditoria.</li>
+  <li><a href="internal/client/client.go">internal/client/client.go</a>:
+    Implementa a lógica do cliente, inicia conexão, cria e envia requisições, e exibe respostas.</li>
+  <li><a href="internal/server/server.go">internal/server/server.go</a>: Implementa a lógica do servidor, aceita conexões, gerencia rotinas de atendimento e integra com a blockchain.</li>
+</ul>
+
+<h2>Testes e Logs</h2>
+<ul>
+  <li>
+    <a href="validate.script"><b>validate.script</b></a>: Executa operações que demonstram todas as funcionalidades, incluindo inserções, remoções e verificações. O servidor é configurado para corromper um bloco após várias inserções, validando o funcionamento da blockchain.
+  </li>
+  <li>
+    <a href="server-log.txt"><b>server-log.txt</b></a>: Registra as saídas do servidor durante a execução do script.
+  </li>
+  <li>
+    <a href="client-log.txt"><b>client-log.txt</b></a>: Registra as saídas dos comandos executados pela CLI do cliente.
+  </li>
+</ul>
+
+<h2>Relatorio</h2>
+
+O relatorio pode ser encontrado <a href="relatorio.pdf"><b>aqui</b></a>:
 
   </head>
   <body>
