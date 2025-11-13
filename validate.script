@@ -53,3 +53,4 @@ mage all
 ./client -id 1 --action 0 --value 30 
 
 kill `pgrep minicoin-server`
+mage clean

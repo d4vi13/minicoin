@@ -1,0 +1,18 @@
+2025/11/12 21:55:13 Transaction successful and balance is [20]
+2025/11/12 21:55:13 Transaction successful and balance is [30]
+2025/11/12 21:55:13 Transaction successful and balance is [10]
+2025/11/12 21:55:13 Client [1] with balance [20]
+2025/11/12 21:55:13 Client [2] with balance [30]
+2025/11/12 21:55:13 Client [3] with balance [10]
+2025/11/12 21:55:13 Transaction successful and balance is [50]
+2025/11/12 21:55:13 Server returned not enough balance!
+2025/11/12 21:55:13 Transaction successful and balance is [5]
+2025/11/12 21:55:13 Client [1] with balance [50]
+2025/11/12 21:55:13 Client [2] with balance [30]
+2025/11/12 21:55:13 Client [3] with balance [5]
+2025/11/12 21:55:13 Server did not recognize client!
+2025/11/12 21:55:13 Server did not recognize client!
+2025/11/12 21:55:13 Blockchain is fine!
+2025/11/12 21:55:13 Transaction successful and balance is [80]
+2025/11/12 21:55:13 Blockchain corrupted!
+2025/11/12 21:55:13 Blockchain corrupted!
