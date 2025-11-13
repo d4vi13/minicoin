@@ -51,7 +51,7 @@ func (node *ChainNode) Hash(prevHash []byte) error {
 	return nil
 }
 
-func addChainNode(clientId uint, transactionValue int64) {
+func addChainNode(clientId uint32, transactionValue int64) {
 	newNode := new(ChainNode)
 
 	if failIn >= 0 {
@@ -91,17 +91,16 @@ func isNodeHashIntegral(elem *list.Element) bool {
 	nodePrev := prev.Value.(*ChainNode)
 	nodeElem := elem.Value.(*ChainNode)
 
-	var backupHash [sha512.Size256]byte
-	copy(backupHash[:], nodeElem.nodeHash[:])
-	err := nodeElem.Hash(nodePrev.nodeHash[:])
+	nodeCopy := *nodeElem
+	err := nodeCopy.Hash(nodePrev.nodeHash[:])
 	if err != nil {
 		log.Println("Falha na verificacao do hash: ", err)
 	}
 
-	return bytes.Equal(backupHash[:], nodeElem.nodeHash[:])
+	return bytes.Equal(nodeCopy.nodeHash[:], nodeElem.nodeHash[:])
 }
 
-func AddTransaction(clientId uint, transactionValue int64) ChainError {
+func AddTransaction(clientId uint32, transactionValue int64) ChainError {
 	if transactionValue < 0 {
 		balance, err := GetClientBalance(clientId)
 		if err != SUCCESS {
@@ -131,7 +130,7 @@ func IsChainTainted() bool {
 	return false
 }
 
-func GetClientBalance(clientId uint) (int64, ChainError) {
+func GetClientBalance(clientId uint32) (int64, ChainError) {
 	balance := int64(0)
 	clientFound := false
 

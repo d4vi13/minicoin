@@ -1,30 +1,32 @@
 package api
 
 import (
-	"encoding/json"
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"net"
+	"reflect"
+	"unsafe"
 )
 
 const (
 	DELIM = 0
 )
 
-type PackageType int
+type PackageType int32
+type ServerResponseType int32
+type ServerFailType int32
+type ClientRequestType int32
 
 const (
 	ClientRequestPkg PackageType = iota
 	ServerResponsePkg
 )
 
-type ServerResponseType int
-
 const (
 	ServerSuccessResponse ServerResponseType = iota
 	ServerFailedResponse
 )
-
-type ServerFailType int
 
 const (
 	ServerNoFail ServerFailType = iota
@@ -32,8 +34,6 @@ const (
 	ServerClientOverdraw
 	BlockchainTainted
 )
-
-type ClientRequestType int
 
 const (
 	ClientCheckBalance ClientRequestType = iota
@@ -43,38 +43,34 @@ const (
 
 // Defines interface for communication
 type PackageHeader struct {
-	PkgType PackageType `json:"pkgType"`
+	PkgType PackageType
 }
 
 // Defines interface for client request
 type ClientRequest struct {
-	Type             ClientRequestType `json:"type"`
-	Identifier       uint              `json:"identifier"`
-	TransactionValue int64             `json:"transactionValue"`
+	Type             ClientRequestType
+	Identifier       uint32
+	TransactionValue int64
 }
 
 // Defines interface for server response
 type ServerResponse struct {
-	Type                  ServerResponseType `json:"type"`
-	FailType              ServerFailType     `json:"failType"`
-	ClientBalance         int64              `json:"clientBalance"`
-	IsBlockchainCorrupted bool               `json:"isBlockchainCorrupted"`
+	Type                  ServerResponseType
+	FailType              ServerFailType
+	ClientBalance         int64
+	IsBlockchainCorrupted bool
 }
 
 func send(data any, conn net.Conn) error {
-	tmp, err := json.Marshal(data)
+	buf := new(bytes.Buffer)
+
+	err := binary.Write(buf, binary.BigEndian, data)
 	if err != nil {
 		return err
 	}
 
-	_, err = conn.Write(tmp)
-	if err != nil {
-		return err
-	}
-
-	byteBuffer := make([]byte, 1)
-	byteBuffer[0] = DELIM
-	_, err = conn.Write(byteBuffer)
+	bytes := buf.Bytes()
+	_, err = conn.Write(bytes)
 	if err != nil {
 		return err
 	}
@@ -99,22 +95,19 @@ func SendPackage(pkgType PackageType, payload any, conn net.Conn) error {
 	return nil
 }
 
-func recv(conn net.Conn) ([]byte, error) {
-	var buffer []byte
-	byteBuffer := make([]byte, 1)
+func recv(conn net.Conn, numB uint32) ([]byte, error) {
+	byteBuffer := make([]byte, numB)
 
+	var buffer []byte
 	for {
-		n, err := conn.Read(byteBuffer)
+		_, err := conn.Read(byteBuffer)
 		if err != nil {
 			return nil, err
 		}
+		buffer = append(buffer, byteBuffer...)
 
-		if n > 0 {
-			if byteBuffer[0] == DELIM {
-				return buffer, nil
-			}
-
-			buffer = append(buffer, byteBuffer[0])
+		if uint32(len(buffer)) == numB {
+			return buffer, nil
 		}
 	}
 }
@@ -122,24 +115,29 @@ func recv(conn net.Conn) ([]byte, error) {
 func RecvPackage(payload any, conn net.Conn) error {
 	var pkg PackageHeader
 
-	tmp, err := recv(conn)
+	pkgSize := uint32(unsafe.Sizeof(pkg))
+	tmp, err := recv(conn, pkgSize)
 	if err != nil {
 		return fmt.Errorf("Failed to read package header")
 	}
-
-	err = json.Unmarshal(tmp, &pkg)
+	reader := bytes.NewReader(tmp)
+	err = binary.Read(reader, binary.BigEndian, &pkg)
 	if err != nil {
-		return fmt.Errorf("Failed to unmarshal header")
+		return fmt.Errorf("Failed to write to pkg var")
 	}
 
-	tmp, err = recv(conn)
+	reflection := reflect.ValueOf(payload)
+	reflection = reflection.Elem()
+	payloadSize := uint32(reflection.Type().Size())
+	tmp, err = recv(conn, payloadSize)
 	if err != nil {
 		return fmt.Errorf("Failed to read payload")
 	}
 
-	err = json.Unmarshal(tmp, payload)
+	reader = bytes.NewReader(tmp)
+	err = binary.Read(reader, binary.BigEndian, payload)
 	if err != nil {
-		return fmt.Errorf("Failed to unmarshal payload")
+		return fmt.Errorf("Failed to write to payload var: %v", err)
 	}
 
 	return nil

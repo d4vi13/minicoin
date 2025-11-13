@@ -39,7 +39,7 @@ func handleClient(conn net.Conn) {
 	defer conn.Close()
 	err := api.RecvPackage(&req, conn)
 	if err != nil {
-		log.Println("Failed to get client request!")
+		log.Println("Failed to get client request: ", err)
 		return
 	}
 
@@ -69,7 +69,7 @@ func handleClient(conn net.Conn) {
 	}
 }
 
-func handleTransaction(clientId uint, value int64) api.ServerResponse {
+func handleTransaction(clientId uint32, value int64) api.ServerResponse {
 	var res api.ServerResponse
 
 	log.Printf("Got transaction request:")
@@ -77,17 +77,21 @@ func handleTransaction(clientId uint, value int64) api.ServerResponse {
 	log.Printf("\t Requested Value: [%d]", value)
 	chainErr := chain.AddTransaction(clientId, value)
 	translateChainError(&res, chainErr)
+
 	switch res.FailType {
 	case api.ServerClientOverdraw:
 		log.Printf("\t Client [%d] does not have enough balance!", clientId)
 	case api.ServerClientUnkown:
 		log.Printf("\t Client [%d] not found!", clientId)
+	case api.ServerNoFail:
+		balance, _ := chain.GetClientBalance(clientId)
+		res.ClientBalance = balance
 	}
 
 	return res
 }
 
-func handleCheckBlockchain(clientId uint, blockchainTainted bool) api.ServerResponse {
+func handleCheckBlockchain(clientId uint32, blockchainTainted bool) api.ServerResponse {
 	var res api.ServerResponse
 
 	log.Printf("Got check blockchain request:")
@@ -103,7 +107,7 @@ func handleCheckBlockchain(clientId uint, blockchainTainted bool) api.ServerResp
 	return res
 }
 
-func handleCheckBalance(clientId uint) api.ServerResponse {
+func handleCheckBalance(clientId uint32) api.ServerResponse {
 	var res api.ServerResponse
 
 	log.Printf("Got check balance request:")

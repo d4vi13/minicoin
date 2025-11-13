@@ -60,6 +60,6 @@ func main() {
 	}
 
 	var minicoinClient client.Client
-	minicoinClient.Init(id, addr, port)
+	minicoinClient.Init(uint32(id), addr, port)
 	minicoinClient.HandleAction(action, value)
 }
