@@ -30,7 +30,7 @@ const (
 	ServerNoFail ServerFailType = iota
 	ServerClientUnkown
 	ServerClientOverdraw
-	ServerBlockchainTainted
+	BlockchainTainted
 )
 
 type ClientRequestType int
@@ -55,9 +55,10 @@ type ClientRequest struct {
 
 // Defines interface for server response
 type ServerResponse struct {
-	Type          ServerResponseType `json:"type"`
-	FailType      ServerFailType     `json:"failType"`
-	ClientBalance int64              `json:"clientBalance"`
+	Type                  ServerResponseType `json:"type"`
+	FailType              ServerFailType     `json:"failType"`
+	ClientBalance         int64              `json:"clientBalance"`
+	IsBlockchainCorrupted bool               `json:"isBlockchainCorrupted"`
 }
 
 func send(data any, conn net.Conn) error {
