@@ -20,11 +20,11 @@ const (
 )
 
 type Client struct {
-	identifier uint
+	identifier uint32
 	connection *net.TCPConn
 }
 
-func (client *Client) Init(clientId uint, name string, port int) {
+func (client *Client) Init(clientId uint32, name string, port int) {
 	client.identifier = clientId
 
 	serverAddr := fmt.Sprintf("%s:%d", name, port)
@@ -44,8 +44,6 @@ func (client *Client) HandleAction(action int, value int64) {
 	var err error
 
 	defer client.connection.Close()
-
-	
 
 	switch action {
 	case TRANSACTION:
@@ -100,12 +98,12 @@ func (client *Client) request(typeReq api.ClientRequestType, value int64) (api.S
 
 	err := api.SendPackage(api.ClientRequestPkg, req, client.connection)
 	if err != nil {
-		return api.ServerResponse{}, fmt.Errorf("Failed to send transaction request %v", err)
+		return api.ServerResponse{}, fmt.Errorf("Failed to send request: %v", err)
 	}
 
 	err = api.RecvPackage(&res, client.connection)
 	if err != nil {
-		return api.ServerResponse{}, fmt.Errorf("Failed to send transaction request %v", err)
+		return api.ServerResponse{}, fmt.Errorf("Failed to recv response: %v", err)
 	}
 
 	return res, nil
