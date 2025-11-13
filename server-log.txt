@@ -1,117 +1,117 @@
-2025/11/12 22:02:10 Serving 127.0.0.1:33558
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [1]
-2025/11/12 22:02:10 	 Requested Value: [20]
-2025/11/12 22:02:10 Adding node: 
-2025/11/12 22:02:10 	 Client id: [1]
-2025/11/12 22:02:10 	 Transaction time: [Wed Nov 12 22:02:10 -03 2025]
-2025/11/12 22:02:10 	 Node hash: [730cc05738892211f29c48c23a2a877c1b729a1183088a2a7e8702fbcb068063]
+2025/11/13 18:04:35 Serving 192.168.1.154:59930
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [1]
+2025/11/13 18:04:35 	 Requested Value: [20]
+2025/11/13 18:04:35 Adding node: 
+2025/11/13 18:04:35 	 Client id: [1]
+2025/11/13 18:04:35 	 Transaction time: [Thu Nov 13 18:04:35 -03 2025]
+2025/11/13 18:04:35 	 Node hash: [0d74ba9e6c011b6d787bd3fcd61868ff761813ddd122a793e7754940e4cbca7f]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33564
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [2]
-2025/11/12 22:02:10 	 Requested Value: [30]
-2025/11/12 22:02:10 Adding node: 
-2025/11/12 22:02:10 	 Client id: [2]
-2025/11/12 22:02:10 	 Transaction time: [Wed Nov 12 22:02:10 -03 2025]
-2025/11/12 22:02:10 	 Node hash: [455d60b7d33c311e371aab9242869fb9e1b858f24d0f61258d51b092df28f736]
+2025/11/13 18:04:35 Serving 192.168.1.154:59946
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [2]
+2025/11/13 18:04:35 	 Requested Value: [30]
+2025/11/13 18:04:35 Adding node: 
+2025/11/13 18:04:35 	 Client id: [2]
+2025/11/13 18:04:35 	 Transaction time: [Thu Nov 13 18:04:35 -03 2025]
+2025/11/13 18:04:35 	 Node hash: [765fa63c8a54759768c7c0b7ec0bb8fea8aaa8ad187f14434e53f08b823c83e1]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33572
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [3]
-2025/11/12 22:02:10 	 Requested Value: [10]
-2025/11/12 22:02:10 Adding node: 
-2025/11/12 22:02:10 	 Client id: [3]
-2025/11/12 22:02:10 	 Transaction time: [Wed Nov 12 22:02:10 -03 2025]
-2025/11/12 22:02:10 	 Node hash: [e27c438069a9e90bcb25a8b3036c7c9b8bf0aaa36abcae56848b5edbb14370e9]
+2025/11/13 18:04:35 Serving 192.168.1.154:59950
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [3]
+2025/11/13 18:04:35 	 Requested Value: [10]
+2025/11/13 18:04:35 Adding node: 
+2025/11/13 18:04:35 	 Client id: [3]
+2025/11/13 18:04:35 	 Transaction time: [Thu Nov 13 18:04:35 -03 2025]
+2025/11/13 18:04:35 	 Node hash: [3623427a049735d6a9935f72746146f53294d5561bd532a9b7f80bc763f34af0]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33582
-2025/11/12 22:02:10 Got check balance request:
-2025/11/12 22:02:10 	 Requesting Client: [1]
-2025/11/12 22:02:10 	 Client [1] with balance [20]
+2025/11/13 18:04:35 Serving 192.168.1.154:59966
+2025/11/13 18:04:35 Got check balance request:
+2025/11/13 18:04:35 	 Requesting Client: [1]
+2025/11/13 18:04:35 	 Client [1] with balance [20]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33584
-2025/11/12 22:02:10 Got check balance request:
-2025/11/12 22:02:10 	 Requesting Client: [2]
-2025/11/12 22:02:10 	 Client [2] with balance [30]
+2025/11/13 18:04:35 Serving 192.168.1.154:59968
+2025/11/13 18:04:35 Got check balance request:
+2025/11/13 18:04:35 	 Requesting Client: [2]
+2025/11/13 18:04:35 	 Client [2] with balance [30]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33592
-2025/11/12 22:02:10 Got check balance request:
-2025/11/12 22:02:10 	 Requesting Client: [3]
-2025/11/12 22:02:10 	 Client [3] with balance [10]
+2025/11/13 18:04:35 Serving 192.168.1.154:59972
+2025/11/13 18:04:35 Got check balance request:
+2025/11/13 18:04:35 	 Requesting Client: [3]
+2025/11/13 18:04:35 	 Client [3] with balance [10]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33608
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [1]
-2025/11/12 22:02:10 	 Requested Value: [30]
-2025/11/12 22:02:10 Adding node: 
-2025/11/12 22:02:10 	 Client id: [1]
-2025/11/12 22:02:10 	 Transaction time: [Wed Nov 12 22:02:10 -03 2025]
-2025/11/12 22:02:10 	 Node hash: [8dd8889abd7c05a13d0304106e8be64af473075cae6d2e7cd59dfd36a0b06fb5]
+2025/11/13 18:04:35 Serving 192.168.1.154:59978
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [1]
+2025/11/13 18:04:35 	 Requested Value: [30]
+2025/11/13 18:04:35 Adding node: 
+2025/11/13 18:04:35 	 Client id: [1]
+2025/11/13 18:04:35 	 Transaction time: [Thu Nov 13 18:04:35 -03 2025]
+2025/11/13 18:04:35 	 Node hash: [f2c486943afff2d0138277b44bf66f40d0d80d749b486186ceef7bac6f1ad3f9]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33620
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [2]
-2025/11/12 22:02:10 	 Requested Value: [-31]
-2025/11/12 22:02:10 	 Client [2] does not have enough balance!
+2025/11/13 18:04:35 Serving 192.168.1.154:59992
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [2]
+2025/11/13 18:04:35 	 Requested Value: [-31]
+2025/11/13 18:04:35 	 Client [2] does not have enough balance!
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33634
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [3]
-2025/11/12 22:02:10 	 Requested Value: [-5]
-2025/11/12 22:02:10 Adding node: 
-2025/11/12 22:02:10 	 Client id: [3]
-2025/11/12 22:02:10 	 Transaction time: [Wed Nov 12 22:02:10 -03 2025]
-2025/11/12 22:02:10 	 Node hash: [92902b686d35ff1610f6bd9af32b2906c7671ec271de53e7d312a1dd30315c04]
+2025/11/13 18:04:35 Serving 192.168.1.154:60006
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [3]
+2025/11/13 18:04:35 	 Requested Value: [-5]
+2025/11/13 18:04:35 Adding node: 
+2025/11/13 18:04:35 	 Client id: [3]
+2025/11/13 18:04:35 	 Transaction time: [Thu Nov 13 18:04:35 -03 2025]
+2025/11/13 18:04:35 	 Node hash: [aea95526affeb965324078b6f86971de8942c42d04c41bcdbb45c84d651e2709]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33644
-2025/11/12 22:02:10 Got check balance request:
-2025/11/12 22:02:10 	 Requesting Client: [1]
-2025/11/12 22:02:10 	 Client [1] with balance [50]
+2025/11/13 18:04:35 Serving 192.168.1.154:60014
+2025/11/13 18:04:35 Got check balance request:
+2025/11/13 18:04:35 	 Requesting Client: [1]
+2025/11/13 18:04:35 	 Client [1] with balance [50]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33648
-2025/11/12 22:02:10 Got check balance request:
-2025/11/12 22:02:10 	 Requesting Client: [2]
-2025/11/12 22:02:10 	 Client [2] with balance [30]
+2025/11/13 18:04:35 Serving 192.168.1.154:60020
+2025/11/13 18:04:35 Got check balance request:
+2025/11/13 18:04:35 	 Requesting Client: [2]
+2025/11/13 18:04:35 	 Client [2] with balance [30]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33660
-2025/11/12 22:02:10 Got check balance request:
-2025/11/12 22:02:10 	 Requesting Client: [3]
-2025/11/12 22:02:10 	 Client [3] with balance [5]
+2025/11/13 18:04:35 Serving 192.168.1.154:60036
+2025/11/13 18:04:35 Got check balance request:
+2025/11/13 18:04:35 	 Requesting Client: [3]
+2025/11/13 18:04:35 	 Client [3] with balance [5]
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33674
-2025/11/12 22:02:10 Got check balance request:
-2025/11/12 22:02:10 	 Requesting Client: [4]
-2025/11/12 22:02:10 	 Client [4] not found!
+2025/11/13 18:04:35 Serving 192.168.1.154:60038
+2025/11/13 18:04:35 Got check balance request:
+2025/11/13 18:04:35 	 Requesting Client: [4]
+2025/11/13 18:04:35 	 Client [4] not found!
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33688
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [4]
-2025/11/12 22:02:10 	 Requested Value: [-30]
-2025/11/12 22:02:10 	 Client [4] not found!
+2025/11/13 18:04:35 Serving 192.168.1.154:60042
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [4]
+2025/11/13 18:04:35 	 Requested Value: [-30]
+2025/11/13 18:04:35 	 Client [4] not found!
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33702
-2025/11/12 22:02:10 Got check blockchain request:
-2025/11/12 22:02:10 	 Requesting Client: [1]
-2025/11/12 22:02:10 	 Blockchain is not corrupted!
+2025/11/13 18:04:35 Serving 192.168.1.154:60054
+2025/11/13 18:04:35 Got check blockchain request:
+2025/11/13 18:04:35 	 Requesting Client: [1]
+2025/11/13 18:04:35 	 Blockchain is not corrupted!
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33708
-2025/11/12 22:02:10 Got transaction request:
-2025/11/12 22:02:10 	 Requesting Client: [1]
-2025/11/12 22:02:10 	 Requested Value: [30]
-2025/11/12 22:02:10 Adding node: 
-2025/11/12 22:02:10 	 Client id: [1]
-2025/11/12 22:02:10 	 Transaction time: [Wed Nov 12 22:02:10 -03 2025]
-2025/11/12 22:02:10 	 Node hash: [74f0855aaf74c246c0aec2bed9d6ad1590da088049bce0ae4294137b0d432ba8]
-2025/11/12 22:02:10 Altering hash...
+2025/11/13 18:04:35 Serving 192.168.1.154:60068
+2025/11/13 18:04:35 Got transaction request:
+2025/11/13 18:04:35 	 Requesting Client: [1]
+2025/11/13 18:04:35 	 Requested Value: [30]
+2025/11/13 18:04:35 Adding node: 
+2025/11/13 18:04:35 	 Client id: [1]
+2025/11/13 18:04:35 	 Transaction time: [Thu Nov 13 18:04:35 -03 2025]
+2025/11/13 18:04:35 	 Node hash: [a51702e43ee0d0947ac737de4f5b51d2889829af2196cc0c6eaf607136b73302]
+2025/11/13 18:04:35 Altering hash...
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33714
-2025/11/12 22:02:10 	 Node [7] hash tainted
-2025/11/12 22:02:10 Got check blockchain request:
-2025/11/12 22:02:10 	 Requesting Client: [1]
-2025/11/12 22:02:10 	 Blockchain is corrupted!
+2025/11/13 18:04:35 Serving 192.168.1.154:60074
+2025/11/13 18:04:35 	 Node [7] hash tainted
+2025/11/13 18:04:35 Got check blockchain request:
+2025/11/13 18:04:35 	 Requesting Client: [1]
+2025/11/13 18:04:35 	 Blockchain is corrupted!
 
-2025/11/12 22:02:10 Serving 127.0.0.1:33718
-2025/11/12 22:02:10 	 Node [7] hash tainted
-2025/11/12 22:02:10 Blockchain corrupted! Operation denied!
+2025/11/13 18:04:35 Serving 192.168.1.154:60076
+2025/11/13 18:04:35 	 Node [7] hash tainted
+2025/11/13 18:04:35 Blockchain corrupted! Operation denied!
 
