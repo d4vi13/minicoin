@@ -1,3 +1,4 @@
+// Package client implements client actions logic
 package client
 
 import (
@@ -8,6 +9,7 @@ import (
 	"github.com/d4vi13/minicoin/internal/api"
 )
 
+// Client request action types
 const (
 	TRANSACTION = iota
 	CHECK_BLOCKCHAIN
@@ -15,15 +17,18 @@ const (
 	MAX_ACTION
 )
 
+// Network connection type
 const (
 	TYPE = "tcp4"
 )
 
+// Client represents a blockchain client connection
 type Client struct {
 	identifier uint32
 	connection *net.TCPConn
 }
 
+// Init initializes client connection to server
 func (client *Client) Init(clientId uint32, name string, port int) {
 	client.identifier = clientId
 
@@ -39,6 +44,7 @@ func (client *Client) Init(clientId uint32, name string, port int) {
 	}
 }
 
+// HandleAction processes different client actions
 func (client *Client) HandleAction(action int, value int64) {
 	var res api.ServerResponse
 	var err error
@@ -88,6 +94,7 @@ func (client *Client) HandleAction(action int, value int64) {
 	}
 }
 
+// request sends request to server and returns response
 func (client *Client) request(typeReq api.ClientRequestType, value int64) (api.ServerResponse, error) {
 	var req api.ClientRequest
 	var res api.ServerResponse
@@ -109,6 +116,7 @@ func (client *Client) request(typeReq api.ClientRequestType, value int64) (api.S
 	return res, nil
 }
 
+// CheckServerResponse validates server response and returns appropriate error
 func CheckServerResponse(serverResp api.ServerResponse) error {
 	if serverResp.Type == api.ServerSuccessResponse {
 		return nil
