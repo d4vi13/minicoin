@@ -121,7 +121,7 @@ func CheckServerResponse(serverResp api.ServerResponse) error {
 	switch serverResp.FailType {
 	case api.ServerNoFail:
 		return fmt.Errorf("Server failed but no fail type was specified!")
-	case api.ServerClientUnkown:
+	case api.ServerClientUnknown:
 		return fmt.Errorf("Server did not recognize client!")
 	case api.ServerClientOverdraw:
 		return fmt.Errorf("Server returned not enough balance!")

@@ -30,7 +30,7 @@ const (
 
 const (
 	ServerNoFail ServerFailType = iota
-	ServerClientUnkown
+	ServerClientUnknown
 	ServerClientOverdraw
 	BlockchainTainted
 )
